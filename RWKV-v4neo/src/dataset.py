@@ -9,6 +9,8 @@ from torch.utils.data import Dataset
 from pytorch_lightning.utilities import rank_zero_info
 from .binidx import MMapIndexedDataset
 from .utils import MaybeIsPrime
+from diskarray import DiskArray
+
 
 
 class MyDataset(Dataset):
@@ -47,9 +49,12 @@ class MyDataset(Dataset):
                     assert args.magic_prime % 3 == 2
                     assert args.magic_prime / dataset_slot > 0.99 and args.magic_prime / dataset_slot <= 1
         elif args.data_type == "numpy":
-            self.data = np.load(args.data_file).astype("int")
+            #self.data = np.load(args.data_file, allow_pickle=False).astype("int")
+            #self.data = np.load(args.data_file, allow_pickle=True).astype("int")
+            #self.data = DiskArray(args.data_file, dtype=np.uint16)
+            self.data = DiskArray(args.data_file, dtype=np.uint16).data.astype("int")
             self.vocab_size = args.vocab_size
-            rank_zero_info("Current vocab size =", self.vocab_size, "(make sure it's correct)")
+            rank_zero_info(f"Current vocab size = {self.vocab_size}, (make sure it's correct)")
             self.data_size = len(self.data)
             rank_zero_info(f"Data has {self.data_size} tokens.")
         elif args.data_type == "uint16":

@@ -6,8 +6,12 @@ if __name__ == "__main__":
     from argparse import ArgumentParser
     from pytorch_lightning import Trainer
     from pytorch_lightning.utilities import rank_zero_info, rank_zero_only
+    import wandb
+
+    wandb.login(host="http://wandb.speech-rnd.internal", key="local-473ad2cf1f9ed9023faf837048e75943e1bbe7c5")
 
     rank_zero_info("########## work in progress ##########")
+
 
     ########################################################################################################
     #
